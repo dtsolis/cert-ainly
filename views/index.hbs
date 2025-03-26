@@ -1,0 +1,205 @@
+{{#> layout}}
+{{#*inline "content"}}
+<div class="row">
+  <div class="col-md-8">
+    <h1>Certificate Manager</h1>
+    <p class="lead">Monitor and manage your certificates</p>
+  </div>
+  {{#if user}}
+  <div class="col-md-4 text-end">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
+      <i class="bi bi-upload me-2"></i>Upload Certificate
+    </button>
+  </div>
+  {{/if}}
+</div>
+
+{{#if needsSetup}}
+<div class="alert alert-info mt-4">
+  <h4 class="alert-heading">Welcome to Cert-ainly!</h4>
+  <p>It looks like this is your first time running the application. To get started, you need to create an admin account.</p>
+  <hr>
+  <a href="/setup" class="btn btn-info">Complete Setup</a>
+</div>
+{{else}}
+
+{{#unless user}}
+<div class="alert alert-warning mt-4">
+  <p>Please <a href="/login">login</a> to manage certificates.</p>
+</div>
+{{/unless}}
+
+<div class="row mt-4 g-2">
+  {{#if certificates.length}}
+    {{#each certificates}}
+    <div class="col-md-4 mb-3">
+      <div class="card certificate-card {{certificateStatusClass validTo}} certificate-clickable" data-certificate-id="{{id}}">
+        <div class="card-body p-3">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h6 class="card-title mb-0">{{commonName}}</h6>
+            <span class="badge bg-{{certificateStatusClass validTo}}">{{certificateStatus validTo}}</span>
+          </div>
+          
+          <div class="small mb-2">
+            <span class="text-muted">Org:</span> {{organization}}
+          </div>
+          
+          <div class="d-flex justify-content-between small mb-1">
+            <div><span class="text-muted">From:</span> {{formatDate validFrom}}</div>
+            <div><span class="text-muted">To:</span> {{formatDate validTo}}</div>
+          </div>
+          
+          <div class="small mb-1">
+            <span class="text-muted">Issuer:</span> {{issuer}}
+          </div>
+          
+          {{#if ../user}}
+          <div class="d-flex justify-content-end mt-2">
+            <a href="/api/certificates/{{id}}/download" class="btn btn-sm btn-outline-primary me-1" title="Download">
+              <i class="bi bi-download"></i>
+            </a>
+            <button class="btn btn-sm btn-outline-danger delete-certificate" data-id="{{id}}" title="Delete">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+    {{/each}}
+  {{else}}
+    <div class="col-12">
+      <div class="alert alert-light text-center p-5">
+        <i class="bi bi-shield-lock display-4 mb-3 d-block"></i>
+        <h4>No Certificates Yet</h4>
+        <p class="mb-4">Upload your first certificate to get started</p>
+        {{#if user}}
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
+          <i class="bi bi-upload me-2"></i>Upload Certificate
+        </button>
+        {{/if}}
+      </div>
+    </div>
+  {{/if}}
+</div>
+
+{{/if}}
+
+<!-- Upload Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="uploadModalLabel">Upload Certificate</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+          <div class="mb-3">
+            <div class="upload-area">
+              <i class="bi bi-cloud-arrow-up display-4 mb-3"></i>
+              <p>Drag & drop your certificate file here or click to browse</p>
+              <input type="file" id="certificateFile" name="certificate" class="form-control" style="display: none;" required>
+              <button type="button" class="btn btn-outline-secondary mt-3" onclick="document.getElementById('certificateFile').click()">
+                Select File
+              </button>
+            </div>
+            
+            <div class="file-info mt-3">
+              <h6>Selected File</h6>
+              <div class="row">
+                <div class="col-3 text-end"><small>Name:</small></div>
+                <div class="col-9"><strong id="fileName"></strong></div>
+              </div>
+              <div class="row">
+                <div class="col-3 text-end"><small>Type:</small></div>
+                <div class="col-9"><span id="fileType"></span></div>
+              </div>
+              <div class="row">
+                <div class="col-3 text-end"><small>Size:</small></div>
+                <div class="col-9"><span id="fileSize"></span></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="certificatePassword" class="form-label">Password (optional)</label>
+            <input type="password" class="form-control" id="certificatePassword" name="password" placeholder="Enter certificate password if needed">
+            <div class="form-text">Some certificates (especially P12/PFX) may require a password</div>
+          </div>
+          
+          <div class="upload-message"></div>
+          
+          <div class="mt-4 text-end">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" id="uploadButton" class="btn btn-primary">
+              <span class="upload-spinner"><span class="spinner"></span></span>
+              Upload
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Certificate Details Modal -->
+<div class="modal fade" id="certificateDetailsModal" tabindex="-1" aria-labelledby="certificateDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="certificateDetailsModalLabel">Certificate Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="certificateDetails">
+          <div class="mb-3">
+            <label class="fw-bold">Common Name:</label>
+            <p id="modal-common-name"></p>
+          </div>
+          <div class="mb-3">
+            <label class="fw-bold">Organization:</label>
+            <p id="modal-organization"></p>
+          </div>
+          <div class="mb-3">
+            <label class="fw-bold">Organizational Unit:</label>
+            <p id="modal-org-unit"></p>
+          </div>
+          <div class="mb-3">
+            <label class="fw-bold">Serial Number:</label>
+            <p id="modal-serial-number" class="font-monospace"></p>
+          </div>
+          <div class="row mb-3">
+            <div class="col-6">
+              <label class="fw-bold">Valid From:</label>
+              <p id="modal-valid-from"></p>
+            </div>
+            <div class="col-6">
+              <label class="fw-bold">Valid To:</label>
+              <p id="modal-valid-to"></p>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="fw-bold">Issuer:</label>
+            <p id="modal-issuer"></p>
+          </div>
+          <div class="mb-3">
+            <label class="fw-bold">File:</label>
+            <p id="modal-filename"></p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a id="modal-download-btn" href="#" class="btn btn-primary">
+          <i class="bi bi-download me-1"></i>Download
+        </a>
+        <button type="button" id="modal-delete-btn" class="btn btn-danger">
+          <i class="bi bi-trash me-1"></i>Delete
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{/inline}}
+{{/layout}} 

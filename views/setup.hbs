@@ -1,0 +1,56 @@
+{{#> layout}}
+{{#*inline "content"}}
+<div class="row justify-content-center mt-5">
+  <div class="col-md-8">
+    <div class="card shadow">
+      <div class="card-header bg-info text-white text-center">
+        <h3 class="mb-0">First-Time Setup</h3>
+      </div>
+      <div class="card-body p-4">
+        <div class="alert alert-info mb-4">
+          <h5 class="alert-heading">Welcome to Cert-ainly!</h5>
+          <p>
+            Please create your admin account to get started. This account will have full access to manage certificates and users.
+          </p>
+        </div>
+        
+        {{#if error}}
+        <div class="alert alert-danger">
+          {{error}}
+        </div>
+        {{/if}}
+        
+        <form action="/setup" method="post">
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+          </div>
+          
+          <div class="mb-3">
+            <label for="email" class="form-label">Email (Optional)</label>
+            <input type="email" class="form-control" id="email" name="email">
+            <div class="form-text">Used for certificate expiration notifications</div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+              <label for="confirmPassword" class="form-label">Confirm Password</label>
+              <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+            </div>
+          </div>
+          
+          <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn btn-info">Create Admin Account</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{/inline}}
+{{/layout}} 

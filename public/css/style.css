@@ -1,0 +1,140 @@
+/* Main Styles */
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.footer {
+  margin-top: auto;
+}
+
+/* Certificate Card Styles */
+.certificate-card {
+  transition: transform 0.2s;
+  border-left: 4px solid #28a745;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.certificate-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.certificate-card.danger {
+  border-left: 4px solid #dc3545;
+}
+
+.certificate-card.warning {
+  border-left: 4px solid #ffc107;
+}
+
+.certificate-card.success {
+  border-left: 4px solid #28a745;
+}
+
+.certificate-card .card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 80%;
+}
+
+.certificate-card .text-muted {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.certificate-clickable {
+  cursor: pointer;
+}
+
+.certificate-clickable:hover {
+  border-color: #0d6efd;
+}
+
+/* Upload Form Styles */
+.upload-area {
+  border: 2px dashed #dee2e6;
+  border-radius: 5px;
+  padding: 2rem;
+  text-align: center;
+  background: #f8f9fa;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.upload-area:hover {
+  border-color: #6c757d;
+  background: #e9ecef;
+}
+
+.upload-area.highlight {
+  border-color: #007bff;
+  background: rgba(0, 123, 255, 0.1);
+}
+
+.file-info {
+  background: #e9ecef;
+  border-radius: 5px;
+  padding: 1rem;
+  margin-top: 1rem;
+  display: none;
+}
+
+/* Highlight for P12/PFX password field */
+.required-password {
+  border-left: 3px solid #ffc107;
+  padding-left: 1rem;
+}
+
+.upload-spinner {
+  display: none;
+  margin-right: 0.5rem;
+}
+
+/* Spinner Animation */
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spinner 0.6s linear infinite;
+}
+
+/* Upload Messages */
+.upload-message {
+  display: none;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+.upload-message.success {
+  display: block;
+  background-color: rgba(40, 167, 69, 0.2);
+  border: 1px solid #28a745;
+}
+
+.upload-message.error {
+  display: block;
+  background-color: rgba(220, 53, 69, 0.2);
+  border: 1px solid #dc3545;
+}
+
+.upload-message.info {
+  display: block;
+  background-color: rgba(0, 123, 255, 0.2);
+  border: 1px solid #007bff;
+}
