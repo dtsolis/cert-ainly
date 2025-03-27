@@ -193,7 +193,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const certificateDetailsModal = new bootstrap.Modal(document.getElementById('certificateDetailsModal'));
 
   certificateCards.forEach((card) => {
-    card.addEventListener('click', function () {
+    card.addEventListener('click', function (e) {
+      // Don't open modal if clicking download or delete button
+      if (e.target.closest('.btn')) {
+        return;
+      }
+
       // Get certificate ID from the card
       const id = this.getAttribute('data-certificate-id');
 
