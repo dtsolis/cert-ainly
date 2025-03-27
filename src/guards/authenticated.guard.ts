@@ -1,5 +1,5 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
 
 @Injectable()
@@ -8,7 +8,14 @@ export class AuthenticatedGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
+    const response = context.switchToHttp().getResponse<Response>();
     const user = await this.authService.getCurrentUser(request);
-    return !!user;
+
+    if (!user) {
+      response.redirect('/');
+      return false;
+    }
+
+    return true;
   }
 }

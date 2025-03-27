@@ -119,12 +119,7 @@ export class WebController {
   @Post('/login')
   @ApiOperation({ summary: 'Process login' })
   @ApiResponse({ status: 302, description: 'Redirects to dashboard or login page' })
-  async processLogin(
-    @Body('username') username: string,
-    @Body('password') password: string,
-    @Req() req: Request,
-    @Res() res: Response,
-  ) {
+  async processLogin(@Body('username') username: string, @Body('password') password: string, @Res() res: Response) {
     try {
       const success = await this.authService.login(username, password, res);
 
@@ -172,7 +167,7 @@ export class WebController {
   }
 
   @Post('/upload')
-  @UseGuards(AuthenticatedGuard)
+  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('certificate'))
   @ApiOperation({ summary: 'Upload certificate' })
   @ApiResponse({ status: 302, description: 'Redirects to dashboard' })
@@ -213,7 +208,7 @@ export class WebController {
   }
 
   @Post('/certificate/:id/delete')
-  @UseGuards(AuthenticatedGuard)
+  @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Delete certificate' })
   @ApiResponse({ status: 302, description: 'Redirects to dashboard' })
   async deleteCertificate(@Param('id', ParseIntPipe) id: number, @Req() req: Request, @Res() res: Response) {
